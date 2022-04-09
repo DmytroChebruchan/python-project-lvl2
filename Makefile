@@ -24,3 +24,6 @@ push:
 	git add .
 	git commit -m 'autocommit'
 	git push
+
+lint:
+	@python3 -m flake8 gendiff
