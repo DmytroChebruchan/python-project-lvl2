@@ -55,8 +55,8 @@ def generate_diff():
     # generating string from incripted list
     for element in merged_list:
         if len(element[1]) == 1:
-            result = result + '    "' + \
-                str(element[0]) + '": ' + str(element[1][0]) + '\n'
+            result = result + '    "'\
+                + str(element[0]) + '": ' + str(element[1][0]) + '\n'
         elif element[1][0] is None:
             result = result + '  + "'\
                 + str(element[0]) + '": ' + str(element[1][1]) + '\n'
