@@ -23,7 +23,6 @@ run:
 
 test:
 	@poetry run python3 -m tests.test_gendiff file1.json file2.json
-	export PATH=$PATH:$HOME/.poetry/bin
 
 push:
 	git add .
