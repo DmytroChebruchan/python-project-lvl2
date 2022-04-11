@@ -6,5 +6,5 @@ jobs:
     steps:
     -  name: linter-check
        run: 
-         pip install poetry
+         pip3 install poetry
          make lint
