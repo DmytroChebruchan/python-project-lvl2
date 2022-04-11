@@ -9,4 +9,4 @@ jobs:
          pip3 install poetry
     -  name: test
        run:
-         ls
+         poetry -V
