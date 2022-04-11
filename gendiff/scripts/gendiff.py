@@ -13,10 +13,10 @@ parser.add_argument('-f', '--format',
 args = parser.parse_args()
 
 
-def generate_diff():
+def generate_diff(first_file=args.first_file, second_file=args.second_file):
 
-    first_dict = dict(json.load(open(args.first_file)))
-    second_dict = dict(json.load(open(args.second_file)))
+    first_dict = dict(json.load(open(first_file)))
+    second_dict = dict(json.load(open(second_file)))
 
     merged_unique_keys_list = sorted(first_dict | second_dict)
     merged_dict = {}
