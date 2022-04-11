@@ -33,4 +33,4 @@ lint:
 	@python3 -m flake8 gendiff
 
 test1:
-	python3 -m tests.test_gendiff file1.json file2.json
+	python -m tests.test_gendiff file1.json file2.json
