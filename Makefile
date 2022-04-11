@@ -11,14 +11,18 @@ install:
 
 package-install:
 	python3 -m pip install --force-reinstall --user dist/*.whl
+	export PATH=$PATH:$HOME/Library/Python/3.10/bin
 
 update:
 	make build
 	make publish
 	make package-install
 
-test:
+run:
 	@poetry run python -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
+
+test:
+	@poetry run python -m tests.test_gendiff
 
 push:
 	git add .

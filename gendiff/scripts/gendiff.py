@@ -4,8 +4,10 @@ import argparse
 import json
 
 parser = argparse.ArgumentParser(description='Generate diff')
+
 parser.add_argument('first_file')
 parser.add_argument('second_file')
+parser.add_argument('-v', '--version')
 parser.add_argument('-f', '--format',
                     help='set format of output')
 args = parser.parse_args()
@@ -13,8 +15,8 @@ args = parser.parse_args()
 
 def generate_diff():
 
-    first_dict = dict(json.load(open('file1.json')))
-    second_dict = dict(json.load(open('file2.json')))
+    first_dict = dict(json.load(open(args.first_file)))
+    second_dict = dict(json.load(open(args.second_file)))
 
     merged_unique_keys_list = sorted(first_dict | second_dict)
     merged_dict = {}
