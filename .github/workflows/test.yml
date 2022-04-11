@@ -4,7 +4,7 @@ jobs:
   test:
     runs-on: ubuntu-latest 
     steps:
-    -  name: pip3 installation
+    -  name: test
        run:
          pip3 install poetry
-         make lint
+         make test
