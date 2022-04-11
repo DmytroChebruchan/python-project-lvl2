@@ -22,7 +22,7 @@ run:
 	@poetry run python -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
 
 test:
-	@poetry run python -m tests.test_gendiff file1.json file2.json
+	@poetry run python3 -m tests.test_gendiff file1.json file2.json
 	export PATH=$PATH:$HOME/.poetry/bin
 
 push:
