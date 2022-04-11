@@ -72,7 +72,6 @@ def generate_diff(first_file=args.first_file, second_file=args.second_file):
                 + str(element[0]) + '": ' + str(element[1][1]) + '\n'
 
     result = result + "}"
-    print(result)
 
     return result
 
