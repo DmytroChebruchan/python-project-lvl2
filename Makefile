@@ -26,7 +26,7 @@ test:
 
 push:
 	git add .
-	git commit -m 'autocommit'
+	git commit -m '\$(M)'
 	git push
 
 lint:
