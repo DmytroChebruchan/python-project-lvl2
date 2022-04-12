@@ -7,4 +7,5 @@ jobs:
     -  name: test
        run:
          pip3 install poetry
+         pip3 install pytest
          make test1
