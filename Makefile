@@ -32,5 +32,8 @@ push:
 lint:
 	@python3 -m flake8 gendiff
 
-test1:
+pytest:
+	poetry run pytest
+
+man_test:
 	python -m tests.test_gendiff file1.json file2.json

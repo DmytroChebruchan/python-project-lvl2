@@ -1,0 +1,9 @@
+name: pytest 
+on: push
+jobs:
+  pytest:
+    runs-on: ubuntu-latest 
+    steps:
+    -  name: pytest
+       run:
+         make pytest
