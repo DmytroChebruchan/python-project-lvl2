@@ -6,4 +6,4 @@ jobs:
     steps:
     -  name: pytest
        run:
-         make pytest
+         make pytest_check

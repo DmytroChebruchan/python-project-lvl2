@@ -32,7 +32,7 @@ push:
 lint:
 	@python3 -m flake8 gendiff
 
-pytest:
+pytest_check:
 	poetry run pytest
 
 man_test:
