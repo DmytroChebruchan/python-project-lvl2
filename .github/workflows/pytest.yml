@@ -6,4 +6,5 @@ jobs:
     steps:
     -  name: pytest
        run:
+         pip3 install poetry
          make pytest_check
