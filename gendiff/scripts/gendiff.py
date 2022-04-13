@@ -3,14 +3,18 @@
 import argparse
 import json
 
-parser = argparse.ArgumentParser(description='Generate diff')
+# parcert of positional arguments
+def parcer():
+    parser = argparse.ArgumentParser(description='Generate diff')
 
-parser.add_argument('first_file')
-parser.add_argument('second_file')
-parser.add_argument('-v', '--version')
-parser.add_argument('-f', '--format',
-                    help='set format of output')
-args = parser.parse_args()
+    parser.add_argument('first_file')
+    parser.add_argument('second_file')
+    parser.add_argument('-v', '--version')
+    parser.add_argument('-f', '--format',
+                help='set format of output')
+    args = parser.parse_args()
+    result = [parser.parse_args().first_file, parser.parse_args().second_file]
+    return result
 
 
 # changes boolin type to string with small first letter
@@ -78,7 +82,7 @@ def result_generator(merged_list):
     return result
 
 
-def generate_diff(first_file=args.first_file, second_file=args.second_file):
+def generate_diff(first_file, second_file):
 
     first_dict = dict(json.load(open(first_file)))
     second_dict = dict(json.load(open(second_file)))
@@ -105,7 +109,8 @@ def generate_diff(first_file=args.first_file, second_file=args.second_file):
 
 
 def main():
-    generate_diff()
+    parce = parcer()
+    generate_diff(parce[0], parce[1])
 
 
 if __name__ == '__main__':
