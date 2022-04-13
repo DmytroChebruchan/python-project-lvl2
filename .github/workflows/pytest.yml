@@ -5,6 +5,6 @@ jobs:
     runs-on: ubuntu-latest 
     steps:
     -  name: pytest
-       run:
+       run: |
          pip3 install poetry
          make pytest_check
