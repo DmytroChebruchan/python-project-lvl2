@@ -7,11 +7,10 @@ publish:
 
 install:
 	python3 -m pip install --user dist/*.whl
-	export PATH=$PATH:$HOME/Library/Python/3.10/bin
+	export PATH=$$PATH:$$HOME/Library/Python/3.10/bin
 
 package-install:
 	python3 -m pip install --force-reinstall --user dist/*.whl
-	export PATH=$PATH:$HOME/Library/Python/3.10/bin
 
 update:
 	make build
