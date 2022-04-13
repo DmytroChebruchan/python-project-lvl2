@@ -6,3 +6,6 @@
 
 ### Linter check
 [![linter_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/linter-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/linter_check.yml)
+
+### pytest check
+[![pytest_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/pytest/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/pytest.yml)
