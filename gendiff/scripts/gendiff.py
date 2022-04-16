@@ -88,6 +88,7 @@ def generate_diff(first_file, second_file):
     second_dict = dict(json.load(open(second_file)))
 
     merged_unique_keys_list = sorted(first_dict | second_dict)
+
     merged_dict = {}
     merged_list = []
     result = '{ \n'

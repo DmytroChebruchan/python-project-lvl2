@@ -1,4 +1,4 @@
-poetry_ro_path:
+poetry_to_path:
 	export PATH=$$PATH:$$HOME/Library/Frameworks/Python.framework/Versions/3.10/bin
 
 build:
