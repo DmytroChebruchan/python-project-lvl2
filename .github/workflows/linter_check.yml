@@ -7,7 +7,7 @@ jobs:
     -  name: installation of poetry
        run: |
             pip3 install poetry
-            make lint
+            python3 -m flake8 gendiff
 
 
 
