@@ -1,12 +1,12 @@
-name: linter-check
+name: pytest
 on: [push]
 jobs:
-  linter-check:
+  pytest:
     runs-on: ubuntu-latest 
     steps:
     -  uses: actions/checkout@v3
-    -  name: linter-check 
+    -  name: pytest
        run: |
             pip3 install poetry
-            pip install flake8
-            poetry run flake8 gendiff
+            pip install pytest
+            poetry run pytest
