@@ -16,7 +16,6 @@ gendiff = "gendiff.scripts.gendiff:main"
 [tool.poetry.dev-dependencies]
 flake8 = "^4.0.1"
 pytest = "^7.1.1"
-pytest-xdist = "^2.5.0"
 
 [build-system]
 requires = ["poetry-core>=1.1.12"]
