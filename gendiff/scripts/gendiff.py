@@ -3,6 +3,7 @@
 import argparse
 import json
 
+
 # parcert of positional arguments
 def parcer():
     parser = argparse.ArgumentParser(description='Generate diff')
@@ -11,8 +12,7 @@ def parcer():
     parser.add_argument('second_file')
     parser.add_argument('-v', '--version')
     parser.add_argument('-f', '--format',
-                help='set format of output')
-    args = parser.parse_args()
+                        help='set format of output')
     result = [parser.parse_args().first_file, parser.parse_args().second_file]
     return result
 
