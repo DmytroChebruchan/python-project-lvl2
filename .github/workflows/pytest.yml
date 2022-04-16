@@ -4,9 +4,13 @@ jobs:
   pytest:
     runs-on: ubuntu-latest 
     steps:
-    -  uses: actions/checkout@v3
-    -  name: pytest
-       run: |
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+    - name: pytest
+      run: |
             pip3 install poetry
             pip3 install pytest
             poetry run pytest
