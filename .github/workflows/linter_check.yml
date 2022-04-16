@@ -8,4 +8,5 @@ jobs:
     -  name: linter-check 
        run: |
             pip3 install poetry
+            pip install flake8
             python3 -m flake8 gendiff
