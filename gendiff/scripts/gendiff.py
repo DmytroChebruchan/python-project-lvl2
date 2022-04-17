@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-
 import json
-from parcer import parcer
+from gendiff.scripts.parcer import parcer
 
 
 # changes boolin type to string with small first letter

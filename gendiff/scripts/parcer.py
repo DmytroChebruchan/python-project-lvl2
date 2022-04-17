@@ -11,3 +11,15 @@ def parcer():
                         help='set format of output')
     result = [parser.parse_args().first_file, parser.parse_args().second_file]
     return result
+
+
+def test():
+    print('TEST')
+
+
+def main():
+    parcer()
+
+
+if __name__ == '__main__':
+    main()
