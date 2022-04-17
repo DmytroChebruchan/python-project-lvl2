@@ -2,6 +2,7 @@
 
 import argparse
 import json
+from parcer import parcer
 
 
 # parcert of positional arguments
