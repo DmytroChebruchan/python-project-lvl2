@@ -1,8 +1,7 @@
 poetry_to_path:
-	export PATH=$$PATH:$$HOME/Library/Frameworks/Python.framework/Versions/3.10/bin
 	export PATH=$$PATH:/Users/alexey/Library/Python/3.10/bin
+
 build:
-	export PATH=$$PATH:$$HOME/.poetry/bin
 	poetry build
 
 publish:
