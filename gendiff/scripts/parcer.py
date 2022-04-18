@@ -1,6 +1,6 @@
 import argparse
 
-
+print('hello from parcer')
 def parcer():
     parser = argparse.ArgumentParser(description='Generate diff')
 

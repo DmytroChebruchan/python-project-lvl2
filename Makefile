@@ -20,12 +20,6 @@ update:
 	make publish
 	make package-install
 
-run:
-	@poetry run python -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
-
-test:
-	@poetry run python3 -m tests.test_gendiff file1.json file2.json
-
 push:
 	git add .
 	git commit -m '$(M)'
@@ -34,8 +28,17 @@ push:
 lint:
 	@python3 -m flake8 gendiff
 
+test:
+	@poetry run python3 -m tests.test_gendiff file1.json file2.json
+
+run:
+	@poetry run python -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
+
 pytest_check:
 	poetry run pytest
 
-man_test:
+man_test_json:
 	python -m tests.test_gendiff file1.json file2.json
+
+man_test_yml:
+	python -m tests.test_gendiff file1.yml file2.yml
