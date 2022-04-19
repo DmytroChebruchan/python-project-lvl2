@@ -8,3 +8,11 @@ def test_generate_diff_json():
     assert generate_diff('tests/fixtures/JSON/file1.json', 'tests/fixtures/JSON/file2.json', 'JSON') == str(result)
 
 test_generate_diff_json()
+
+# def test_generate_diff_json_2():
+#     file = open('./tests/fixtures/results/fixture_gendiff_test_2.txt', 'r')
+#     result = file.read()
+#     assert generate_diff('tests/fixtures/JSON/file1_2.json', 'tests/fixtures/JSON/file2_2.json') == str(result)
+#     assert generate_diff('tests/fixtures/JSON/file1_2.json', 'tests/fixtures/JSON/file2_2.json', 'JSON') == str(result)
+
+# test_generate_diff_json_2()
