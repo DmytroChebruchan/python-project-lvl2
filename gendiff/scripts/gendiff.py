@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import yaml
 from gendiff.scripts.parcer import parcer
 
 
@@ -79,9 +80,10 @@ def format_parcer(first_file, format):
                 break
             i = i + 1
         found_format = str(first_file[i + 1:])
-        found_format = found_format.upper()
     else:
         found_format = format
+
+    found_format = found_format.upper()
 
     if found_format == 'JSON':
         result = 'JSON'
@@ -91,19 +93,29 @@ def format_parcer(first_file, format):
     return result
 
 
+def yml_reader(files_address):
+    return yaml.safe_load(open(files_address))
+
+
+def json_reader(files_address):
+    return json.load(open(files_address))
+
+
 # reads files and terns them to dicts
 def files_to_dict_reader(first_file, second_file, format):
+
     first_dict = {}
     second_dict = {}
 
     format = format_parcer(first_file, format)
+
     if format == 'JSON':
-        first_dict = dict(json.load(open(first_file)))
-        second_dict = dict(json.load(open(second_file)))
+        first_dict = dict(json_reader(first_file))
+        second_dict = dict(json_reader(second_file))
 
     if format == 'YML':
-        first_dict = {}
-        second_dict = {}
+        first_dict = dict(yml_reader(first_file))
+        second_dict = dict(yml_reader(second_file))
 
     return first_dict, second_dict
 
@@ -111,6 +123,7 @@ def files_to_dict_reader(first_file, second_file, format):
 # generates differences
 def generate_diff(first_files_address, second_files_address, format=None):
 
+    # reading files and converting them to dicts
     first_dict, second_dict = files_to_dict_reader(first_files_address,
                                                    second_files_address,
                                                    format)
@@ -119,7 +132,6 @@ def generate_diff(first_files_address, second_files_address, format=None):
 
     merged_dict = {}
     merged_list = []
-    result = '{ \n'
 
     # replacing False and True to false and true as string
     first_dict = replace_F_T_to_f_t(first_dict)
@@ -139,8 +151,7 @@ def generate_diff(first_files_address, second_files_address, format=None):
 
 def main():
     parce = parcer()
-    result = generate_diff(parce[0], parce[1], parce[2])
-    print(result)
+    generate_diff(parce[0], parce[1], parce[2])
 
 
 if __name__ == '__main__':
