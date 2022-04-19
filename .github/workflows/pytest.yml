@@ -13,4 +13,4 @@ jobs:
       run: |
             pip3 install poetry
             pip3 install pytest
-            poetry run pytest
+            poetry run pytest --cov-report term-missing --cov=gendiff tests/
