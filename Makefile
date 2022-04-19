@@ -1,5 +1,5 @@
 poetry_to_path:
-	export PATH=$$PATH:/Users/alexey/Library/Python/3.10/bin
+	export PATH=$PATH:/Users/alexey/Library/Python/3.10/bin
 
 build:
 	poetry build
@@ -26,19 +26,19 @@ push:
 	git push
 
 lint:
-	@python3 -m flake8 gendiff
+	python3 -m flake8 gendiff
 
 test:
-	@poetry run python3 -m tests.test_gendiff file1.json file2.json
+	python3 -m tests.test_gendiff file1.json file2.json
 
 run:
-	@poetry run python -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
+	python3 -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
 
 pytest_check:
 	poetry run pytest
 
 man_test_json:
-	python -m tests.test_gendiff file1.json file2.json
+	python3 -m tests.test_gendiff file1.json file2.json
 
 man_test_yml:
-	python -m tests.test_gendiff file1.yml file2.yml
+	python3 -m tests.test_gendiff file1.yml file2.yml

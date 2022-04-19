@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json
+import re
 from gendiff.scripts.parcer import parcer
 
 
@@ -68,10 +69,52 @@ def result_generator(merged_list):
     return result
 
 
-def generate_diff(first_file, second_file):
+def format_parcer(first_file, format):
+    result = ''
+    found_format = ''
 
-    first_dict = dict(json.load(open(first_file)))
-    second_dict = dict(json.load(open(second_file)))
+    if format is None:
+        i = 0
+        while i < len(first_file):
+            if first_file[i] == '.':
+                break
+            i = i + 1
+        found_format = str(first_file[i+1:])
+        found_format = found_format.upper()
+    else:
+        found_format = format
+
+    if found_format == 'JSON':
+        result = 'JSON'
+    if found_format == 'YAML' or found_format == 'YML':
+        result = 'YML'
+    
+    return result
+
+
+# reads files and terns them to dicts
+def files_to_dict_reader(first_file, second_file, format):
+    first_dict = {}
+    second_dict = {}
+    
+    format = format_parcer(first_file, format)
+    if format == 'JSON':
+        first_dict = dict(json.load(open(first_file)))
+        second_dict = dict(json.load(open(second_file)))
+
+    if format == 'YML':
+        first_dict = {}
+        second_dict = {}
+
+    return first_dict, second_dict
+
+
+# generates differences
+def generate_diff(first_files_address, second_files_address, format=None):
+
+    first_dict, second_dict = files_to_dict_reader(first_files_address,
+                                                   second_files_address,
+                                                   format)
 
     merged_unique_keys_list = sorted(first_dict | second_dict)
 
@@ -97,8 +140,8 @@ def generate_diff(first_file, second_file):
 
 def main():
     parce = parcer()
-    generate_diff(parce[0], parce[1])
-
+    result = generate_diff(parce[0], parce[1], parce[2])
+    print(result)
 
 if __name__ == '__main__':
     main()
