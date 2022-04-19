@@ -153,6 +153,7 @@ def generate_diff(first_files_address, second_files_address, format=None):
 def main():
     parce = parcer()
     result = generate_diff(parce[0], parce[1], parce[2])
+    print(result)
     return result
 
 

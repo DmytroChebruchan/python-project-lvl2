@@ -31,17 +31,17 @@ lint:
 	python3 -m flake8 gendiff
 
 run:
-	python3 -m gendiff.scripts.gendiff -f 'JSON' file1.json file2.json
+	python3 -m gendiff.scripts.gendiff -f 'JSON' tests/fixtures/file1.json tests/fixtures/file2.json
 
 run2:
-	python3 -m gendiff.scripts.gendiff -f 'YML' file1.yml file2.yml
+	python3 -m gendiff.scripts.gendiff -f 'YML' tests/fixtures/file1.yml tests/fixtures/file2.yml
 
 check:
 	make lint
 	poetry run pytest --cov-report term-missing --cov=gendiff tests/
 
 man_test_json:
-	python3 -m tests.test_gendiff_json file1.json file2.json
+	python3 -m tests.test_gendiff_json tests/fixtures/file1.json tests/fixtures/file2.json
 
 man_test_yml:
-	python3 -m tests.test_gendiff_yml file1.yml file2.yml
+	python3 -m tests.test_gendiff_yml tests/fixtures/file1.yml tests/fixtures/file2.yml
