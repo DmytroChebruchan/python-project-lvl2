@@ -47,7 +47,7 @@ def dict_to_sorted_list(dictionary):
 
 # decoder of complex list to required string format
 def result_generator(merged_list):
-    result = '{ \n'
+    result = '\n{ \n'
 
     for element in merged_list:
         if len(element[1]) == 1:
@@ -69,6 +69,7 @@ def result_generator(merged_list):
     return result
 
 
+# finder of format
 def format_parcer(first_file, format):
     result = ''
     found_format = ''
@@ -151,7 +152,8 @@ def generate_diff(first_files_address, second_files_address, format=None):
 
 def main():
     parce = parcer()
-    generate_diff(parce[0], parce[1], parce[2])
+    result = generate_diff(parce[0], parce[1], parce[2])
+    return result
 
 
 if __name__ == '__main__':
