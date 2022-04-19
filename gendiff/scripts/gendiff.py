@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 import json
-import re
 from gendiff.scripts.parcer import parcer
 
 
@@ -79,7 +78,7 @@ def format_parcer(first_file, format):
             if first_file[i] == '.':
                 break
             i = i + 1
-        found_format = str(first_file[i+1:])
+        found_format = str(first_file[i + 1:])
         found_format = found_format.upper()
     else:
         found_format = format
@@ -88,7 +87,7 @@ def format_parcer(first_file, format):
         result = 'JSON'
     if found_format == 'YAML' or found_format == 'YML':
         result = 'YML'
-    
+
     return result
 
 
@@ -96,7 +95,7 @@ def format_parcer(first_file, format):
 def files_to_dict_reader(first_file, second_file, format):
     first_dict = {}
     second_dict = {}
-    
+
     format = format_parcer(first_file, format)
     if format == 'JSON':
         first_dict = dict(json.load(open(first_file)))
@@ -142,6 +141,7 @@ def main():
     parce = parcer()
     result = generate_diff(parce[0], parce[1], parce[2])
     print(result)
+
 
 if __name__ == '__main__':
     main()
