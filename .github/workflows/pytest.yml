@@ -12,5 +12,6 @@ jobs:
     - name: pytest
       run: |
             pip3 install poetry
+            pip3 install PyYAML
             pip3 install pytest
             poetry run pytest 
