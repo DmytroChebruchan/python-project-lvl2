@@ -130,7 +130,7 @@ def generate_diff(first_files_address, second_files_address, format=None):
                                                    format)
 
     merged_unique_keys_list = sorted(first_dict | second_dict)
-
+    print('\nmerged_unique_keys_list is ' + str(merged_unique_keys_list) + '\n')
     merged_dict = {}
     merged_list = []
 
@@ -153,7 +153,6 @@ def generate_diff(first_files_address, second_files_address, format=None):
 def main():
     parce = parcer()
     result = generate_diff(parce[0], parce[1], parce[2])
-    print(result)
     return result
 
 

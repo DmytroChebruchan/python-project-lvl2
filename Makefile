@@ -1,3 +1,6 @@
+test:
+	gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
+
 poetry_to_path:
 	export PATH='$PATH:/Users/alexey/Library/Python/3.10/bin'
 
