@@ -121,31 +121,114 @@ def files_to_dict_reader(first_file, second_file, format):
     return first_dict, second_dict
 
 
-# generates differences
-def generate_diff(first_files_address, second_files_address, format=None):
+def merged_unique_keys_list_generator(first_dict, second_dict):
+    return sorted(first_dict | second_dict)
 
-    # reading files and converting them to dicts
+
+def decoder_of_lines_with_same_value(key, value, level):
+    return '    ' * level + str(key) + ": " + str(value)
+
+
+def decoder_of_lines_with_diff_value(key, value, level):
+    result = ''
+    argument = 0
+    operator = ''
+    if value[0] is None or value[1] is None:
+        if value[0] is None:
+            operator = '-'
+            argument = 1
+        if value[1] is None:
+            operator = '+'
+        result = '  ' * level + operator + ' ' + str(key)
+        + ": " + str(value[argument])
+    else:
+        result = ' +  ' + str(key) + ": " + str(value[0])
+        result = result + '\n -  ' + str(key) + ": " + str(value[1])
+    return result
+
+
+def decoder(diction):
+    result = ''
+    level = 1
+    children = []
+
+    def inner(diction):
+        print(diction)
+        result = "\n{" + '    ' * level
+        for key in diction:
+            if isinstance(diction[key], dict) is False:
+                if isinstance(diction[key], list) is False:
+                    result = result + "\n" \
+                        + decoder_of_lines_with_same_value(key,
+                                                           diction[key],
+                                                           level)
+                else:
+                    result = result + "\n" \
+                        + decoder_of_lines_with_diff_value(key,
+                                                           diction[key],
+                                                           level)
+            else:
+                children.append(diction[key])
+        if children == []:
+            result = result + '    ' * (level - 1) + "\n}"
+        print("inner result is " + str(result))
+        return result
+
+    result = inner(diction)
+
+    print("result is " + str(result))
+    print("children are " + str(children))
+    for child in children:
+        inner(child)
+    return result
+
+
+def generate_diff(first_files_address, second_files_address, format=None):
     first_dict, second_dict = files_to_dict_reader(first_files_address,
                                                    second_files_address,
                                                    format)
+    result = []
 
-    merged_unique_keys_list = sorted(first_dict | second_dict)
-    print('\nmerged_unique_keys_list is ' + str(merged_unique_keys_list) + '\n')
-    merged_dict = {}
-    merged_list = []
+    diff_dict = {}
+    list_sub_dict = []
 
-    # replacing False and True to false and true as string
-    first_dict = replace_F_T_to_f_t(first_dict)
-    second_dict = replace_F_T_to_f_t(second_dict)
+    def inner(first_dict, second_dict, diff_dict):
+        for key in first_dict:
+            if type(first_dict[key]) is not dict:
+                if key in second_dict:
+                    if first_dict[key] == second_dict[key]:
+                        diff_dict[key] = first_dict[key]
+                    else:
+                        diff_dict[key] = [first_dict[key], second_dict[key]]
+                else:
+                    diff_dict[key] = [first_dict[key], None]
+            else:
+                if key in second_dict:
+                    if type(second_dict[key]) is dict:
+                        list_sub_dict.append([key, [first_dict[key],
+                                                    second_dict[key]]])
+                    else:
+                        diff_dict[key] = [first_dict[key], second_dict[key]]
+                else:
+                    diff_dict[key] = [first_dict[key], None]
 
-    # creating merged dict
-    merged_dict = dict_merger(merged_unique_keys_list, first_dict, second_dict)
+        for key in second_dict:
+            if type(second_dict[key]) is not dict:
+                if key not in first_dict:
+                    diff_dict[key] = [None, second_dict[key]]
+            else:
+                if key not in first_dict:
+                    diff_dict[key] = [None, second_dict[key]]
 
-    # creating merged incripted list with all information
-    merged_list = dict_to_sorted_list(merged_dict)
+    inner(first_dict, second_dict, diff_dict)
 
-    # decoded result
-    result = result_generator(merged_list)
+    def pre_inner(set_of_dicts):
+        diff_dict[set_of_dicts[0]] = {}
+        inner(set_of_dicts[1][0], set_of_dicts[1][1],
+              diff_dict[set_of_dicts[0]])
+
+    list(map(pre_inner, list_sub_dict))
+    result = decoder(diff_dict)
 
     return result
 
