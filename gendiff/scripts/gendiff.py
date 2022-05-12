@@ -16,24 +16,6 @@ def replace_F_T_to_f_t(first_dict):
     return first_dict
 
 
-# merger of dicts saving source of keys and their values
-def dict_merger(merged_unique_keys_list, first_dict, second_dict):
-    merged_dict = {}
-
-    for key in merged_unique_keys_list:
-        if key in first_dict and key in second_dict:
-            if first_dict[key] == second_dict[key]:
-                merged_dict[key] = [first_dict[key]]
-            else:
-                merged_dict[key] = [first_dict[key], second_dict[key]]
-        elif key in first_dict:
-            merged_dict[key] = [first_dict[key], None]
-        else:
-            merged_dict[key] = [None, second_dict[key]]
-
-    return merged_dict
-
-
 # changer of dict to sorted list for further decoding
 def dict_to_sorted_list(dictionary):
     result = []
@@ -42,30 +24,6 @@ def dict_to_sorted_list(dictionary):
         result.append([key, dictionary[key]])
     result.sort()
 
-    return result
-
-
-# decoder of complex list to required string format
-def result_generator(merged_list):
-    result = '\n{ \n'
-
-    for element in merged_list:
-        if len(element[1]) == 1:
-            result = result + '    "'\
-                + str(element[0]) + '": ' + str(element[1][0]) + '\n'
-        elif element[1][0] is None:
-            result = result + '  + "'\
-                + str(element[0]) + '": ' + str(element[1][1]) + '\n'
-        elif element[1][1] is None:
-            result = result + '  - "'\
-                + str(element[0]) + '": ' + str(element[1][0]) + '\n'
-        else:
-            result = result + '  - "'\
-                + str(element[0]) + '": ' + str(element[1][0]) + '\n'
-            result = result + '  + "'\
-                + str(element[0]) + '": ' + str(element[1][1]) + '\n'
-
-    result = result + "}"
     return result
 
 
@@ -102,6 +60,18 @@ def json_reader(files_address):
     return json.load(open(files_address))
 
 
+def none_null(dictionary):
+    result = {}
+    for key in dictionary:
+        if isinstance(dictionary[key], dict):
+            result = none_null(dictionary[key])
+        else:
+            if dictionary[key] is None:
+                dictionary[key] = 'null'
+    result = dictionary
+    return result
+
+
 # reads files and terns them to dicts
 def files_to_dict_reader(first_file, second_file, format):
 
@@ -118,69 +88,169 @@ def files_to_dict_reader(first_file, second_file, format):
         first_dict = dict(yml_reader(first_file))
         second_dict = dict(yml_reader(second_file))
 
+    first_dict = none_null(replace_F_T_to_f_t(first_dict))
+    second_dict = none_null(replace_F_T_to_f_t(second_dict))
+
     return first_dict, second_dict
 
 
-def merged_unique_keys_list_generator(first_dict, second_dict):
-    return sorted(first_dict | second_dict)
+def generator_same_keys_diff_values(first_dict, second_dict):
 
+    first_set = set(first_dict)
+    second_set = set(second_dict)
+    mutual_keys = first_set & second_set
+    mutual_keys_unique_value = set(filter(lambda x:
+                                          first_dict[x] != second_dict[x],
+                                          mutual_keys))
 
-def decoder_of_lines_with_same_value(key, value, level):
-    return '    ' * level + str(key) + ": " + str(value)
-
-
-def decoder_of_lines_with_diff_value(key, value, level):
-    result = ''
-    argument = 0
-    operator = ''
-    if value[0] is None or value[1] is None:
-        if value[0] is None:
-            operator = '-'
-            argument = 1
-        if value[1] is None:
-            operator = '+'
-        result = '  ' * level + operator + ' ' + str(key)
-        + ": " + str(value[argument])
-    else:
-        result = ' +  ' + str(key) + ": " + str(value[0])
-        result = result + '\n -  ' + str(key) + ": " + str(value[1])
+    result = {}
+    for key in mutual_keys_unique_value:
+        result[key] = [first_dict[key], second_dict[key]]
     return result
 
 
-def decoder(diction):
-    result = ''
-    level = 1
-    children = []
+def generator_of_diff_dict_diff_key(first_dict, second_dict):
+    unique_pairs = {}
+    for key in first_dict:
+        if key not in second_dict:
+            unique_pairs[key] = [first_dict[key], None]
+    for key in second_dict:
+        if key not in first_dict:
+            unique_pairs[key] = [None, second_dict[key]]
+    return unique_pairs
 
-    def inner(diction):
-        print(diction)
-        result = "\n{" + '    ' * level
-        for key in diction:
-            if isinstance(diction[key], dict) is False:
-                if isinstance(diction[key], list) is False:
-                    result = result + "\n" \
-                        + decoder_of_lines_with_same_value(key,
-                                                           diction[key],
-                                                           level)
+
+def is_dict_deep(dictionary):
+    for element in dictionary:
+        if isinstance(dictionary[element], dict):
+            return True
+    return False
+
+
+def common_pairs(first_dict, second_dict):
+    result = {}
+    for key in first_dict:
+        if key in second_dict and first_dict[key] == second_dict[key]:
+            result[key] = first_dict[key]
+    return result
+
+
+def diff_dict_generator(first_dict, second_dict):
+    def inner(first_dict, second_dict, diff_dict):
+
+        same_keys_and_same_values = common_pairs(first_dict, second_dict)
+        unique_pairs = generator_of_diff_dict_diff_key(first_dict, second_dict)
+        diff_dict = diff_dict | same_keys_and_same_values | unique_pairs
+
+        # for deep dictionaries
+        if is_dict_deep(first_dict) and is_dict_deep(second_dict):
+            common_keys = set(first_dict) & set(second_dict)
+            for key in common_keys:
+                if isinstance(first_dict.get(key), dict) \
+                        and isinstance(second_dict.get(key), dict):
+                    diff_dict[key] = diff_dict_generator(first_dict[key],
+                                                         second_dict[key])
                 else:
-                    result = result + "\n" \
-                        + decoder_of_lines_with_diff_value(key,
-                                                           diction[key],
-                                                           level)
-            else:
-                children.append(diction[key])
-        if children == []:
-            result = result + '    ' * (level - 1) + "\n}"
-        print("inner result is " + str(result))
-        return result
+                    if first_dict[key] != second_dict[key]:
+                        diff_dict[key] = [first_dict[key], second_dict[key]]
+                    else:
+                        diff_dict[key] = first_dict[key]
+        else:
+            # generating dictionaries with differences
+            same_keys_diff_values = generator_same_keys_diff_values(first_dict,
+                                                                    second_dict)
+            diff_dict = diff_dict | same_keys_diff_values
 
-    result = inner(diction)
+        return diff_dict
+    return inner(first_dict, second_dict, {})
 
-    print("result is " + str(result))
-    print("children are " + str(children))
-    for child in children:
-        inner(child)
+
+def dict_value(dictionary, level):
+    result = '{'
+    for key in dictionary:
+        if not isinstance(dictionary[key], dict):
+            exported_element = str(dictionary[key])
+        else:
+            exported_element = dict_value(dictionary[key], level + 1)
+
+        result = result + '\n' + '    ' * (level + 1) + key + ": "\
+            + exported_element
+
+    result = result + '\n' + '    ' * level + "}"
+
     return result
+
+
+def to_string(key, level, value, operator='common'):
+    operators = {"common": '    ',
+                 "0": '  - ',
+                 "1": '  + '}
+
+    lower_case_bool = {"True": "true",
+                       "False": "false",
+                       "null": "null"}
+    if isinstance(value, bool):
+        value = lower_case_bool.get(str(value))
+
+    if isinstance(value, dict):
+        value = dict_value(value, level)
+
+    result = '    ' * (level - 1) + operators.get(operator)\
+        + str(key) + ": " + str(value) + '\n'
+    return result
+
+
+def dict_or_list_checker(element, node):
+    if isinstance(node[element], dict) or isinstance(node[element], list):
+        return element
+    else:
+        return False
+
+
+def is_deep(node):
+    keys_dicts = list(filter(lambda x: dict_or_list_checker(x, node), node))
+    return True if keys_dicts else False
+
+
+def inner_dict(dictionary):
+    return list(filter(lambda x: isinstance(dictionary[x], dict), dictionary))
+
+
+def result_generator(pair, key, level, result):
+
+    first_element, second_element = pair
+    if first_element is None:
+        result = result + to_string(key, level,
+                                    second_element, str(1))
+    elif second_element is None:
+        result = result + to_string(key, level,
+                                    first_element, str(0))
+    else:
+        result = result + to_string(key, level,
+                                    first_element,
+                                    str(0))
+        result = result + to_string(key, level,
+                                    second_element,
+                                    str(1))
+    return result
+
+
+def decoder(dictionary):
+    def inner(dictionary, result, level=1):
+
+        for key in sorted(list(dictionary)):
+            if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
+                value = inner(dictionary[key], "", level + 1)
+                result = result + to_string(key, level,
+                                            value, 'common')
+            elif isinstance(dictionary[key], list):
+                result = result_generator(dictionary[key], key, level, result)
+            else:
+                result = result + to_string(key, level,
+                                            dictionary[key], 'common')
+        result = "{\n" + result + '    ' * (level - 1) + "}"
+        return result
+    return str('\n' + inner(dictionary, ''))
 
 
 def generate_diff(first_files_address, second_files_address, format=None):
@@ -188,48 +258,9 @@ def generate_diff(first_files_address, second_files_address, format=None):
                                                    second_files_address,
                                                    format)
     result = []
+    diff_dict = diff_dict_generator(first_dict, second_dict)
 
-    diff_dict = {}
-    list_sub_dict = []
-
-    def inner(first_dict, second_dict, diff_dict):
-        for key in first_dict:
-            if type(first_dict[key]) is not dict:
-                if key in second_dict:
-                    if first_dict[key] == second_dict[key]:
-                        diff_dict[key] = first_dict[key]
-                    else:
-                        diff_dict[key] = [first_dict[key], second_dict[key]]
-                else:
-                    diff_dict[key] = [first_dict[key], None]
-            else:
-                if key in second_dict:
-                    if type(second_dict[key]) is dict:
-                        list_sub_dict.append([key, [first_dict[key],
-                                                    second_dict[key]]])
-                    else:
-                        diff_dict[key] = [first_dict[key], second_dict[key]]
-                else:
-                    diff_dict[key] = [first_dict[key], None]
-
-        for key in second_dict:
-            if type(second_dict[key]) is not dict:
-                if key not in first_dict:
-                    diff_dict[key] = [None, second_dict[key]]
-            else:
-                if key not in first_dict:
-                    diff_dict[key] = [None, second_dict[key]]
-
-    inner(first_dict, second_dict, diff_dict)
-
-    def pre_inner(set_of_dicts):
-        diff_dict[set_of_dicts[0]] = {}
-        inner(set_of_dicts[1][0], set_of_dicts[1][1],
-              diff_dict[set_of_dicts[0]])
-
-    list(map(pre_inner, list_sub_dict))
     result = decoder(diff_dict)
-
     return result
 
 
