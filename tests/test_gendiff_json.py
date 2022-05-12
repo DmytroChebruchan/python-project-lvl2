@@ -9,6 +9,7 @@ def test_generate_diff_json():
 
 test_generate_diff_json()
 
+
 def test_generate_diff_json_2():
     file = open('./tests/fixtures/results/fixture_gendiff_test_2.txt', 'r')
     result = file.read()

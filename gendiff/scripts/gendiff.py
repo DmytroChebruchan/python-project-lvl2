@@ -217,7 +217,6 @@ def inner_dict(dictionary):
 
 
 def result_generator(pair, key, level, result):
-
     first_element, second_element = pair
     if first_element is None:
         result = result + to_string(key, level,
@@ -235,9 +234,8 @@ def result_generator(pair, key, level, result):
     return result
 
 
-def decoder(dictionary):
+def stylish(dictionary):
     def inner(dictionary, result, level=1):
-
         for key in sorted(list(dictionary)):
             if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
                 value = inner(dictionary[key], "", level + 1)
@@ -260,7 +258,7 @@ def generate_diff(first_files_address, second_files_address, format=None):
     result = []
     diff_dict = diff_dict_generator(first_dict, second_dict)
 
-    result = decoder(diff_dict)
+    result = stylish(diff_dict)
     return result
 
 
