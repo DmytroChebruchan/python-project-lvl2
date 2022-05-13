@@ -2,6 +2,7 @@
 import json
 import yaml
 from gendiff.scripts.parcer import parcer
+from gendiff.scripts.decoder import stylish
 
 
 # changes boolin type to string with small first letter
@@ -16,50 +17,6 @@ def replace_F_T_to_f_t(first_dict):
     return first_dict
 
 
-# changer of dict to sorted list for further decoding
-def dict_to_sorted_list(dictionary):
-    result = []
-
-    for key in dictionary:
-        result.append([key, dictionary[key]])
-    result.sort()
-
-    return result
-
-
-# finder of format
-def format_parcer(first_file, format):
-    result = ''
-    found_format = ''
-
-    if format is None:
-        i = 0
-        while i < len(first_file):
-            if first_file[i] == '.':
-                break
-            i = i + 1
-        found_format = str(first_file[i + 1:])
-    else:
-        found_format = format
-
-    found_format = found_format.upper()
-
-    if found_format == 'JSON':
-        result = 'JSON'
-    if found_format == 'YAML' or found_format == 'YML':
-        result = 'YML'
-
-    return result
-
-
-def yml_reader(files_address):
-    return yaml.safe_load(open(files_address))
-
-
-def json_reader(files_address):
-    return json.load(open(files_address))
-
-
 def none_null(dictionary):
     result = {}
     for key in dictionary:
@@ -72,26 +29,51 @@ def none_null(dictionary):
     return result
 
 
+# finder of format
+def format_parcer(first_file):
+    found_format = ''
+
+    i = 0
+    while i < len(first_file):
+        if first_file[i] == '.':
+            break
+        i = i + 1
+    found_format = str(first_file[i + 1:]).upper()
+
+    formats = {'JSON': 'JSON',
+               'YAML': 'YML',
+               'YML': 'YML'}
+
+    return formats.get(found_format)
+
+
+def yml_reader(files_address):
+    return yaml.safe_load(open(files_address))
+
+
+def json_reader(files_address):
+    return json.load(open(files_address))
+
+
 # reads files and terns them to dicts
-def files_to_dict_reader(first_file, second_file, format):
+def files_to_dict_reader(file_1, file_2):
 
-    first_dict = {}
-    second_dict = {}
+    dict_1 = {}
+    dict_2 = {}
 
-    format = format_parcer(first_file, format)
+    format = format_parcer(file_1)
 
-    if format == 'JSON':
-        first_dict = dict(json_reader(first_file))
-        second_dict = dict(json_reader(second_file))
+    formats = {'JSON': json_reader,
+               'YML': yml_reader}
 
-    if format == 'YML':
-        first_dict = dict(yml_reader(first_file))
-        second_dict = dict(yml_reader(second_file))
+    pair = list(map(lambda file: dict(formats.get(format)(file)),
+                    [file_1, file_2]))
+    dict_1, dict_2 = pair
 
-    first_dict = none_null(replace_F_T_to_f_t(first_dict))
-    second_dict = none_null(replace_F_T_to_f_t(second_dict))
+    dict_1 = none_null(replace_F_T_to_f_t(dict_1))
+    dict_2 = none_null(replace_F_T_to_f_t(dict_2))
 
-    return first_dict, second_dict
+    return dict_1, dict_2
 
 
 def generator_same_keys_diff_values(first_dict, second_dict):
@@ -146,13 +128,13 @@ def diff_dict_generator(first_dict, second_dict):
         if is_dict_deep(first_dict) and is_dict_deep(second_dict):
             common_keys = set(first_dict) & set(second_dict)
             for key in common_keys:
+                pair_values = first_dict[key], second_dict[key]
                 if isinstance(first_dict.get(key), dict) \
                         and isinstance(second_dict.get(key), dict):
-                    diff_dict[key] = diff_dict_generator(first_dict[key],
-                                                         second_dict[key])
+                    diff_dict[key] = diff_dict_generator(*pair_values)
                 else:
-                    if first_dict[key] != second_dict[key]:
-                        diff_dict[key] = [first_dict[key], second_dict[key]]
+                    if pair_values[0] != pair_values[1]:
+                        diff_dict[key] = [*pair_values]
                     else:
                         diff_dict[key] = first_dict[key]
         else:
@@ -165,100 +147,22 @@ def diff_dict_generator(first_dict, second_dict):
     return inner(first_dict, second_dict, {})
 
 
-def dict_value(dictionary, level):
-    result = '{'
-    for key in dictionary:
-        if not isinstance(dictionary[key], dict):
-            exported_element = str(dictionary[key])
-        else:
-            exported_element = dict_value(dictionary[key], level + 1)
-
-        result = result + '\n' + '    ' * (level + 1) + key + ": "\
-            + exported_element
-
-    result = result + '\n' + '    ' * level + "}"
-
-    return result
-
-
-def to_string(key, level, value, operator='common'):
-    operators = {"common": '    ',
-                 "0": '  - ',
-                 "1": '  + '}
-
-    lower_case_bool = {"True": "true",
-                       "False": "false",
-                       "null": "null"}
-    if isinstance(value, bool):
-        value = lower_case_bool.get(str(value))
-
-    if isinstance(value, dict):
-        value = dict_value(value, level)
-
-    result = '    ' * (level - 1) + operators.get(operator)\
-        + str(key) + ": " + str(value) + '\n'
-    return result
-
-
-def dict_or_list_checker(element, node):
-    if isinstance(node[element], dict) or isinstance(node[element], list):
-        return element
-    else:
-        return False
-
-
-def is_deep(node):
-    keys_dicts = list(filter(lambda x: dict_or_list_checker(x, node), node))
-    return True if keys_dicts else False
-
-
 def inner_dict(dictionary):
     return list(filter(lambda x: isinstance(dictionary[x], dict), dictionary))
 
 
-def result_generator(pair, key, level, result):
-    first_element, second_element = pair
-    if first_element is None:
-        result = result + to_string(key, level,
-                                    second_element, str(1))
-    elif second_element is None:
-        result = result + to_string(key, level,
-                                    first_element, str(0))
-    else:
-        result = result + to_string(key, level,
-                                    first_element,
-                                    str(0))
-        result = result + to_string(key, level,
-                                    second_element,
-                                    str(1))
-    return result
-
-
-def stylish(dictionary):
-    def inner(dictionary, result, level=1):
-        for key in sorted(list(dictionary)):
-            if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
-                value = inner(dictionary[key], "", level + 1)
-                result = result + to_string(key, level,
-                                            value, 'common')
-            elif isinstance(dictionary[key], list):
-                result = result_generator(dictionary[key], key, level, result)
-            else:
-                result = result + to_string(key, level,
-                                            dictionary[key], 'common')
-        result = "{\n" + result + '    ' * (level - 1) + "}"
-        return result
-    return str('\n' + inner(dictionary, ''))
-
-
-def generate_diff(first_files_address, second_files_address, format=None):
+def generate_diff(first_files_address, second_files_address, format='stylish'):
+    if format is None:
+        format = 'stylish'
     first_dict, second_dict = files_to_dict_reader(first_files_address,
-                                                   second_files_address,
-                                                   format)
+                                                   second_files_address)
     result = []
     diff_dict = diff_dict_generator(first_dict, second_dict)
 
-    result = stylish(diff_dict)
+    decoders = {'stylish': stylish,
+                'plane': 'plain'}
+
+    result = decoders.get(format)(diff_dict)
     return result
 
 

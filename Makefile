@@ -4,6 +4,9 @@ test:
 test2:
 	gendiff tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
 
+pytest:
+	poetry run pytest --cov-report term-missing --cov=gendiff tests/
+
 build:
 	poetry build
 
@@ -34,10 +37,10 @@ lint:
 	python3 -m flake8 gendiff
 
 run:
-	@python3 -m gendiff.scripts.gendiff -f 'JSON' tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
+	@python3 -m gendiff.scripts.gendiff tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
 
 run2:
-	python3 -m gendiff.scripts.gendiff -f 'YML' tests/fixtures/JSON/file1.yml tests/fixtures/JSON/file2.yml
+	python3 -m gendiff.scripts.gendiff tests/fixtures/JSON/file1.yml tests/fixtures/JSON/file2.yml
 
 check:
 	make lint
