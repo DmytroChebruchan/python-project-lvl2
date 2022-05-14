@@ -2,7 +2,7 @@
 import json
 import yaml
 from gendiff.scripts.parcer import parcer
-from gendiff.scripts.decoder import stylish, plain
+from gendiff.formater.decoder import stylish, plain
 
 
 # changes boolin type to string with small first letter

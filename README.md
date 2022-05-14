@@ -18,3 +18,6 @@ https://asciinema.org/connect/c04a3227-714d-4fdb-8bc0-4dc4b9a45160
 
 asciinema gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
 https://asciinema.org/connect/4042bde3-b551-4837-8a5a-6d58e51da235
+
+gendiff --format plain tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
+https://asciinema.org/connect/4042bde3-b551-4837-8a5a-6d58e51da235

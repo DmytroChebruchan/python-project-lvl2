@@ -77,15 +77,19 @@ def result_generator(pair, key, level, result):
 def stylish(dictionary):
     def inner(dictionary, result, level=1):
         for key in sorted(list(dictionary)):
+
             if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
                 value = inner(dictionary[key], "", level + 1)
                 result = result + to_string(key, level,
                                             value, 'common')
+
             elif isinstance(dictionary[key], list):
                 result = result_generator(dictionary[key], key, level, result)
+
             else:
                 result = result + to_string(key, level,
                                             dictionary[key], 'common')
+
         result = "{\n" + result + '    ' * (level - 1) + "}"
         return result
     return str('\n' + inner(dictionary, ''))
@@ -93,10 +97,12 @@ def stylish(dictionary):
 
 def plain_result(key, list_of_values):
 
+    # updating pair by replacing dicts with '[complex value]'
     pair = list(map(lambda val:
                     '[complex value]' if isinstance(val, dict) else val,
                     list_of_values))
 
+    # updating pair by replacing bool and None elements
     bool_elements = {'True': 'true',
                      'False': 'false',
                      'null': 'null',
@@ -107,20 +113,21 @@ def plain_result(key, list_of_values):
                     if str(val) in bool_elements else str("'{}'".format(val)),
                     pair))
 
+    # preparations of templates
     template = '\nProperty \'{}\' was {}'
     added_element = ('added with value: {}').format(pair[1])
     updated_element = ('updated. From {} to {}').format(*pair)
 
-    action_dict = {'1': 'removed',
-                   '0': added_element,
-                   '2': updated_element}
-    result = ""
-
+    # finding index of None element
     index = 2
     for i in [0, 1]:
         if list_of_values[i] is None:
             index = i
             break
+
+    action_dict = {'1': 'removed',
+                   '0': added_element,
+                   '2': updated_element}
 
     action = action_dict.get(str(index))
     result = template.format(key, action)
@@ -132,15 +139,15 @@ def plain(dictionary):
     def inner(dictionary, result, parent):
         for key in sorted(list(dictionary)):
             if parent == '':
-                parent_2 = key
+                inner_parent = key
             else:
-                parent_2 = parent + "." + key
+                inner_parent = parent + "." + key
 
             added_line = ''
             if isinstance(dictionary[key], list):
-                added_line = plain_result(parent_2, dictionary[key])
+                added_line = plain_result(inner_parent, dictionary[key])
             if isinstance(dictionary[key], dict):
-                added_line = inner(dictionary[key], '', parent_2)
+                added_line = inner(dictionary[key], '', inner_parent)
             result = result + added_line
 
         return result
