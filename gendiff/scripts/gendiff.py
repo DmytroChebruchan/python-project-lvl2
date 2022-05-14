@@ -2,7 +2,7 @@
 import json
 import yaml
 from gendiff.scripts.parcer import parcer
-from gendiff.scripts.decoder import stylish
+from gendiff.scripts.decoder import stylish, plain
 
 
 # changes boolin type to string with small first letter
@@ -154,15 +154,18 @@ def inner_dict(dictionary):
 def generate_diff(first_files_address, second_files_address, format='stylish'):
     if format is None:
         format = 'stylish'
+
     first_dict, second_dict = files_to_dict_reader(first_files_address,
                                                    second_files_address)
+
     result = []
     diff_dict = diff_dict_generator(first_dict, second_dict)
 
     decoders = {'stylish': stylish,
-                'plane': 'plain'}
+                'plain': plain}
 
     result = decoders.get(format)(diff_dict)
+
     return result
 
 
