@@ -92,7 +92,7 @@ def stylish(dictionary):
 
         result = "{\n" + result + '    ' * (level - 1) + "}"
         return result
-    return str('\n' + inner(dictionary, ''))
+    return inner(dictionary, '')
 
 
 def plain_result(key, list_of_values):
