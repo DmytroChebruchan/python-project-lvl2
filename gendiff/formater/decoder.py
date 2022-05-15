@@ -56,6 +56,27 @@ def to_string(key, level, value, operator='common'):
     return result
 
 
+def to_string_json(key, level, value, operator='common'):
+    print(key)
+    operators = {"common": '    ',
+                 "0": '  - ',
+                 "1": '  + '}
+
+    lower_case_bool = {"True": "true",
+                       "False": "false",
+                       "null": "null"}
+
+    if isinstance(value, bool):
+        value = lower_case_bool.get(str(value))
+
+    if isinstance(value, dict):
+        value = dict_value(value, level)
+
+    result = '    ' * (level - 1) + str('"') + operators.get(operator)\
+        + str(key) + str('"') + ": \"" + str(value) + '"\n'
+    return result
+
+
 def result_generator(pair, key, level, result):
     first_element, second_element = pair
     if first_element is None:
@@ -155,9 +176,41 @@ def plain(dictionary):
     return inner(dictionary, '', '')[1::]
 
 
-def json_decoder(dictionary):
-    result = '''{"added": '',
-              "updated": '',
-              "removed": ''}'''
-
+def result_generator_json(pair, key, level, result):
+    first_element, second_element = pair
+    if first_element is None:
+        result = result + to_string_json(key, level,
+                                         second_element, str(1))
+    elif second_element is None:
+        result = result + to_string_json(key, level,
+                                         first_element, str(0))
+    else:
+        result = result + to_string_json(key, level,
+                                         first_element,
+                                         str(0))
+        result = result + to_string_json(key, level,
+                                         second_element,
+                                         str(1))
     return result
+
+
+def json_decoder(dictionary):
+    def inner(dictionary, result, level=1):
+        for key in sorted(list(dictionary)):
+
+            if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
+                value = inner(dictionary[key], "", level + 1)
+                result = result + to_string_json(key, level,
+                                                 value, 'common')
+
+            elif isinstance(dictionary[key], list):
+                result = result_generator_json(dictionary[key], key,
+                                               level, result)
+
+            else:
+                result = result + to_string_json(key, level,
+                                                 dictionary[key], 'common')
+
+        result = "{\n" + result + '    ' * (level - 1) + "}"
+        return result
+    return inner(dictionary, '')
