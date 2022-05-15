@@ -156,7 +156,8 @@ def plain(dictionary):
 
 
 def json_decoder(dictionary):
-    result = {"added": '',
+    result = '''{"added": '',
               "updated": '',
-              "removed": ''}
+              "removed": ''}'''
+
     return result
