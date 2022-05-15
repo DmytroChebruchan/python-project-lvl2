@@ -107,7 +107,8 @@ def plain_result(key, list_of_values):
                      'False': 'false',
                      'null': 'null',
                      'None': 'None',
-                     '[complex value]': '[complex value]'}
+                     '[complex value]': '[complex value]',
+                     '0': '0'}
     pair = list(map(lambda val:
                     bool_elements.get(str(val))
                     if str(val) in bool_elements else str("'{}'".format(val)),
