@@ -153,3 +153,7 @@ def plain(dictionary):
 
         return result
     return inner(dictionary, '', '')[1::]
+
+
+def json_decoder(dictionary):
+    return ''
