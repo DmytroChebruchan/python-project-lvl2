@@ -165,6 +165,7 @@ def generate_diff(first_files_address, second_files_address, format='stylish'):
                 'plain': plain}
 
     result = decoders.get(format)(diff_dict)
+    print(result)
 
     return result
 

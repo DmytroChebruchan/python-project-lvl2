@@ -151,4 +151,4 @@ def plain(dictionary):
             result = result + added_line
 
         return result
-    return inner(dictionary, '', '')
+    return inner(dictionary, '', '')[1::]
