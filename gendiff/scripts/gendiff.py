@@ -57,23 +57,18 @@ def json_reader(files_address):
 
 # reads files and terns them to dicts
 def files_to_dict_reader(file_1, file_2):
-
-    dict_1 = {}
-    dict_2 = {}
+    files = (file_1, file_2)
 
     format = format_parcer(file_1)
 
     formats = {'JSON': json_reader,
                'YML': yml_reader}
 
-    pair = list(map(lambda file: dict(formats.get(format)(file)),
-                    [file_1, file_2]))
-    dict_1, dict_2 = pair
-
-    dict_1 = none_null(replace_F_T_to_f_t(dict_1))
-    dict_2 = none_null(replace_F_T_to_f_t(dict_2))
-
-    return dict_1, dict_2
+    pair = tuple(map(lambda file: dict(formats.get(format)(file)),
+                     files))
+    pair = tuple(map(lambda dictionary:
+                     none_null(replace_F_T_to_f_t(dictionary)), pair))
+    return pair
 
 
 def generator_same_keys_diff_values(first_dict, second_dict):
@@ -166,6 +161,7 @@ def generate_diff(first_files_address, second_files_address, format='stylish'):
                 'json': json_decoder}
 
     result = decoders.get(format)(diff_dict)
+    print(result)
 
     return result
 

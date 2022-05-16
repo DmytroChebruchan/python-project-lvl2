@@ -37,10 +37,10 @@ lint:
 	@python3 -m flake8 gendiff
 
 run:
-	@poetry run gendiff -f json tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
+	@poetry run gendiff tests/fixtures/YML/file1_2.yml tests/fixtures/YML/file2_2.yml
 
 run2:
-	python3 -m gendiff.scripts.gendiff tests/fixtures/JSON/file1.yml tests/fixtures/JSON/file2.yml
+	@poetry run gendiff tests/fixtures/YML/file1_3.yml tests/fixtures/YML/file2_3.yml
 
 check:
 	make lint
