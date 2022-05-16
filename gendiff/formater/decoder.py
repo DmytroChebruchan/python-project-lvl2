@@ -56,27 +56,6 @@ def to_string(key, level, value, operator='common'):
     return result
 
 
-def to_string_json(key, level, value, operator='common'):
-    print(key)
-    operators = {"common": '    ',
-                 "0": '  - ',
-                 "1": '  + '}
-
-    lower_case_bool = {"True": "true",
-                       "False": "false",
-                       "null": "null"}
-
-    if isinstance(value, bool):
-        value = lower_case_bool.get(str(value))
-
-    if isinstance(value, dict):
-        value = dict_value(value, level)
-
-    result = '    ' * (level - 1) + str('"') + operators.get(operator)\
-        + str(key) + str('"') + ": \"" + str(value) + '"\n'
-    return result
-
-
 def result_generator(pair, key, level, result):
     first_element, second_element = pair
     if first_element is None:
@@ -157,6 +136,12 @@ def plain_result(key, list_of_values):
     return result
 
 
+def str_updated_format(result):
+    result = str(result).replace("'", "\"").replace("False", "false")
+    result = result.replace("True", "true")
+    return result
+
+
 def plain(dictionary):
     def inner(dictionary, result, parent):
         for key in sorted(list(dictionary)):
@@ -176,41 +161,35 @@ def plain(dictionary):
     return inner(dictionary, '', '')[1::]
 
 
-def result_generator_json(pair, key, level, result):
-    first_element, second_element = pair
-    if first_element is None:
-        result = result + to_string_json(key, level,
-                                         second_element, str(1))
-    elif second_element is None:
-        result = result + to_string_json(key, level,
-                                         first_element, str(0))
-    else:
-        result = result + to_string_json(key, level,
-                                         first_element,
-                                         str(0))
-        result = result + to_string_json(key, level,
-                                         second_element,
-                                         str(1))
-    return result
+def inner_parent_generator(parent, key):
+    return key if parent == '' else parent + "." + key
 
 
 def json_decoder(dictionary):
-    def inner(dictionary, result, level=1):
-        for key in sorted(list(dictionary)):
+    result = {"added": {},
+              "removed": {},
+              "updated": {}}
 
-            if isinstance(dictionary[key], dict) and is_deep(dictionary[key]):
-                value = inner(dictionary[key], "", level + 1)
-                result = result + to_string_json(key, level,
-                                                 value, 'common')
+    def inner(dictionary, result, parent):
+        for key in dictionary:
+
+            inner_parent = inner_parent_generator(parent, key)
+
+            if isinstance(dictionary[key], dict):
+                inner(dictionary[key], result, inner_parent)
 
             elif isinstance(dictionary[key], list):
-                result = result_generator_json(dictionary[key], key,
-                                               level, result)
+                pair = list(map(lambda val:
+                                '[complex value]' if isinstance(val, dict)
+                                else val,
+                                dictionary[key]))
+                removed_element, added_element = pair
 
-            else:
-                result = result + to_string_json(key, level,
-                                                 dictionary[key], 'common')
+                if removed_element is None:
+                    result['added'][inner_parent] = added_element
+                else:
+                    result['removed'][str(key)] = removed_element
 
-        result = "{\n" + result + '    ' * (level - 1) + "}"
+        result = str_updated_format(result)
         return result
-    return inner(dictionary, '')
+    return inner(dictionary, result, '')
