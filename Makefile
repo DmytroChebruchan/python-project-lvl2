@@ -39,9 +39,6 @@ lint:
 run:
 	@poetry run gendiff tests/fixtures/YML/file1_2.yml tests/fixtures/YML/file2_2.yml
 
-run2:
-	@poetry run gendiff tests/fixtures/YML/file1_3.yml tests/fixtures/YML/file2_3.yml
-
 check:
 	make lint
 	poetry run pytest --cov-report term-missing --cov=gendiff tests/
