@@ -120,8 +120,9 @@ def diff_dict_generator(first_dict, second_dict):
         diff_dict = diff_dict | same_keys_and_same_values | unique_pairs
 
         # for deep dictionaries
-        if is_dict_deep(first_dict) and is_dict_deep(second_dict):
+        if all((is_dict_deep(first_dict), is_dict_deep(second_dict))):
             common_keys = set(first_dict) & set(second_dict)
+
             for key in common_keys:
                 pair_values = first_dict[key], second_dict[key]
                 if isinstance(first_dict.get(key), dict) \
@@ -161,7 +162,6 @@ def generate_diff(first_files_address, second_files_address, format='stylish'):
                 'json': json_decoder}
 
     result = decoders.get(format)(diff_dict)
-    print(result)
 
     return result
 
