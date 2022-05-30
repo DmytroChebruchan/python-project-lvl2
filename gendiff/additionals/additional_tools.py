@@ -3,28 +3,7 @@
 import json
 import yaml
 from gendiff.parcer.parcer import format_parcer
-
-
-def bool_to_lower_case(dictionary):
-
-    for key in dictionary:
-        if dictionary[key] is False:
-            dictionary[key] = 'false'
-        elif dictionary[key] is True:
-            dictionary[key] = 'true'
-    return dictionary
-
-
-def none_to_null(dictionary):
-    result = {}
-    for key in dictionary:
-        if isinstance(dictionary[key], dict):
-            result = none_to_null(dictionary[key])
-        else:
-            if dictionary[key] is None:
-                dictionary[key] = 'null'
-    result = dictionary
-    return result
+from gendiff.additionals.replacers import none_to_null, bool_to_lower_case_str
 
 
 def yml_reader(files_address):
@@ -33,13 +12,6 @@ def yml_reader(files_address):
 
 def json_reader(files_address):
     return json.load(open(files_address))
-
-
-def is_dict_deep(dictionary):
-    for element in dictionary:
-        if isinstance(dictionary[element], dict):
-            return True
-    return False
 
 
 def common_pairs(first_dict, second_dict):
@@ -62,5 +34,43 @@ def files_to_dict_reader(file_1, file_2):
     pair = tuple(map(lambda file: dict(formats.get(format)(file)),
                      files))
     pair = tuple(map(lambda dictionary:
-                     none_to_null(bool_to_lower_case(dictionary)), pair))
+                     none_to_null(bool_to_lower_case_str(dictionary)), pair))
     return pair
+
+
+def transforms_dict_to_value(dictionary, level):
+    result = '{'
+
+    for key in dictionary:
+        if not isinstance(dictionary[key], dict):
+            exported_element = str(dictionary[key])
+        else:
+            exported_element = transforms_dict_to_value(dictionary[key],
+                                                        level + 1)
+
+        result = result + '\n' + '    ' * (level + 1) + key + ": "\
+            + exported_element
+
+    result = result + '\n' + '    ' * level + "}"
+
+    return result
+
+
+def transforms_option_to_string(key, level, value, operator='common'):
+    operators = {"common": '    ',
+                 "0": '  - ',
+                 "1": '  + '}
+
+    lower_case_bool = {"True": "true",
+                       "False": "false",
+                       "null": "null"}
+
+    if isinstance(value, bool):
+        value = lower_case_bool.get(str(value))
+
+    if isinstance(value, dict):
+        value = transforms_dict_to_value(value, level)
+
+    result = '    ' * (level - 1) + operators.get(operator)\
+        + str(key) + ": " + str(value) + '\n'
+    return result

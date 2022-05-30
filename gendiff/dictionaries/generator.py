@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-from gendiff.additionals.additional_tools import is_dict_deep, common_pairs
+from gendiff.additionals.additional_tools import common_pairs
+from gendiff.additionals.checkers import is_dict_deep
 
 
 def generator_same_keys_diff_values(first_dict, second_dict):
