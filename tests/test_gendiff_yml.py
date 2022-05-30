@@ -1,4 +1,4 @@
-from gendiff.scripts.gendiff import generate_diff
+from gendiff.scripts.gendiff_script import generate_diff
 
 
 def test_generate_diff_yaml():

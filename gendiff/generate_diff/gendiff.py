@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
-from gendiff.parcer.parcer import parcer
 from gendiff.formater.formater import stylish, plain, json_decoder
-from gendiff.additionals.additional_tools import files_to_dict_reader 
+from gendiff.additionals.additional_tools import files_to_dict_reader
 from gendiff.dictionaries.generator import diff_dict_generator
 
 
@@ -23,13 +22,3 @@ def generate_diff(first_files_address, second_files_address, format='stylish'):
     print(result)
 
     return result
-
-
-def main():
-    parce = parcer()
-    result = generate_diff(parce[0], parce[1], parce[2])
-    return result
-
-
-if __name__ == '__main__':
-    main()
