@@ -1,6 +1,7 @@
 .vscode
 .pytest_cache
 .coverage
+gendiff/__pycache__
 __pycache__
 *.pyc
 .venv
