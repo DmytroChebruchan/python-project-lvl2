@@ -1,74 +1,8 @@
 #!/usr/bin/env python3
-import json
-import yaml
-from gendiff.scripts.parcer import parcer
-from gendiff.formater.decoder import stylish, plain, json_decoder
-
-
-# changes boolin type to string with small first letter
-def replace_F_T_to_f_t(first_dict):
-
-    for key in first_dict:
-        if first_dict[key] is False:
-            first_dict[key] = 'false'
-        elif first_dict[key] is True:
-            first_dict[key] = 'true'
-
-    return first_dict
-
-
-def none_null(dictionary):
-    result = {}
-    for key in dictionary:
-        if isinstance(dictionary[key], dict):
-            result = none_null(dictionary[key])
-        else:
-            if dictionary[key] is None:
-                dictionary[key] = 'null'
-    result = dictionary
-    return result
-
-
-# finder of format
-def format_parcer(first_file):
-    found_format = ''
-
-    i = 0
-    while i < len(first_file):
-        if first_file[i] == '.':
-            break
-        i = i + 1
-    found_format = str(first_file[i + 1:]).upper()
-
-    formats = {'JSON': 'JSON',
-               'YAML': 'YML',
-               'YML': 'YML'}
-
-    return formats.get(found_format)
-
-
-def yml_reader(files_address):
-    return yaml.safe_load(open(files_address))
-
-
-def json_reader(files_address):
-    return json.load(open(files_address))
-
-
-# reads files and terns them to dicts
-def files_to_dict_reader(file_1, file_2):
-    files = (file_1, file_2)
-
-    format = format_parcer(file_1)
-
-    formats = {'JSON': json_reader,
-               'YML': yml_reader}
-
-    pair = tuple(map(lambda file: dict(formats.get(format)(file)),
-                     files))
-    pair = tuple(map(lambda dictionary:
-                     none_null(replace_F_T_to_f_t(dictionary)), pair))
-    return pair
+from gendiff.parcer.parcer import parcer
+from gendiff.formater.formater import stylish, plain, json_decoder
+from gendiff.additionals.additional_tools import is_dict_deep, \
+    files_to_dict_reader, common_pairs
 
 
 def generator_same_keys_diff_values(first_dict, second_dict):
@@ -95,21 +29,6 @@ def generator_of_diff_dict_diff_key(first_dict, second_dict):
         if key not in first_dict:
             unique_pairs[key] = [None, second_dict[key]]
     return unique_pairs
-
-
-def is_dict_deep(dictionary):
-    for element in dictionary:
-        if isinstance(dictionary[element], dict):
-            return True
-    return False
-
-
-def common_pairs(first_dict, second_dict):
-    result = {}
-    for key in first_dict:
-        if key in second_dict and first_dict[key] == second_dict[key]:
-            result[key] = first_dict[key]
-    return result
 
 
 def diff_dict_generator(first_dict, second_dict):
@@ -141,10 +60,6 @@ def diff_dict_generator(first_dict, second_dict):
 
         return diff_dict
     return inner(first_dict, second_dict, {})
-
-
-def inner_dict(dictionary):
-    return list(filter(lambda x: isinstance(dictionary[x], dict), dictionary))
 
 
 def generate_diff(first_files_address, second_files_address, format='stylish'):

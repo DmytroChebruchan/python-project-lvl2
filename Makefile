@@ -36,7 +36,6 @@ push:
 	git commit -m '$(M)'
 	git push
 
-
 run:
 	@poetry run gendiff tests/fixtures/YML/file1_2.yml tests/fixtures/YML/file2_2.yml
 
