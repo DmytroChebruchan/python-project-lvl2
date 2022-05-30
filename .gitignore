@@ -1,7 +1,7 @@
 .vscode
 .pytest_cache
 .coverage
-dist
 __pycache__
 *.pyc
-file.txt
+.venv
+dist
