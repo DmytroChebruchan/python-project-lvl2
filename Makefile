@@ -1,9 +1,3 @@
-test:
-	gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
-
-test2:
-	gendiff tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
-
 pytest:
 	poetry run pytest --cov-report term-missing --cov=gendiff tests/
 
