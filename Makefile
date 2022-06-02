@@ -15,11 +15,9 @@ publish:
 
 install:
 	python3 -m pip install --user dist/*.whl
-	export PATH=$$PATH:$$HOME/Library/Python/3.10/bin
 
 package-install:
 	python3 -m pip install --force-reinstall --user dist/*.whl
-	export PATH=$$PATH:/Users/alexey/Library/Python/3.10/bin
 
 lint:
 	@poetry run flake8
@@ -35,9 +33,6 @@ push:
 	git add .
 	git commit -m '$(M)'
 	git push
-
-run:
-	@poetry run gendiff tests/fixtures/YML/file1_2.yml tests/fixtures/YML/file2_2.yml
 
 check:
 	make lint

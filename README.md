@@ -1,5 +1,6 @@
 [![Actions Status](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/8f2233d4c51c92ad427c/test_coverage)](https://codeclimate.com/github/paambaati/codeclimate-action/test_coverage)
+[![Maintainability](https://api.codeclimate.com/v1/badges/ca77f181295a8b60f2e6/maintainability)](https://codeclimate.com/github/DmitriyChebruchan/python-project-lvl2/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/ca77f181295a8b60f2e6/test_coverage)](https://codeclimate.com/github/DmitriyChebruchan/python-project-lvl2/test_coverage)
 [![linter_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/linter-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/linter_check.yml)
 [![pytest_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/pytest/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/pytest.yml)
 
