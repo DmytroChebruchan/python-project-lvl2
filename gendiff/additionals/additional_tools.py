@@ -13,14 +13,6 @@ def json_reader(files_address):
     return json.load(open(files_address))
 
 
-def common_pairs(first_dict, second_dict):
-    result = {}
-    for key in first_dict:
-        if key in second_dict and first_dict[key] == second_dict[key]:
-            result[key] = first_dict[key]
-    return result
-
-
 # reads files and terns them to dicts
 def files_to_dict_reader(file_1, file_2):
     files = (file_1, file_2)
@@ -87,6 +79,14 @@ def dict_to_complex_value(value):
     return '[complex value]' if isinstance(value, dict) else value
 
 
+def inner_parent_generator(parent, key):
+    return key if parent == '' else parent + "." + key
+
+
+def stylish_result_wrapper(result, level):
+    return "{\n" + result + '    ' * (level - 1) + "}"
+
+
 def generator_of_diff_dict_diff_key(first_dict, second_dict):
     unique_pairs = {}
 
@@ -108,9 +108,9 @@ def diff_dict_composer(first_dict, second_dict, diff_dict):
     return diff_dict | same_keys_and_same_values | unique_pairs
 
 
-def inner_parent_generator(parent, key):
-    return key if parent == '' else parent + "." + key
-
-
-def stylish_result_wrapper(result, level):
-    return "{\n" + result + '    ' * (level - 1) + "}"
+def common_pairs(first_dict, second_dict):
+    result = {}
+    for key in first_dict:
+        if key in second_dict and first_dict[key] == second_dict[key]:
+            result[key] = first_dict[key]
+    return result
