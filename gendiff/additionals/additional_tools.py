@@ -87,10 +87,6 @@ def dict_to_complex_value(value):
     return '[complex value]' if isinstance(value, dict) else value
 
 
-def json_inner_parent_generator(parent, key):
-    return key if parent == '' else parent + "." + key
-
-
 def generator_of_diff_dict_diff_key(first_dict, second_dict):
     unique_pairs = {}
 
@@ -112,5 +108,9 @@ def diff_dict_composer(first_dict, second_dict, diff_dict):
     return diff_dict | same_keys_and_same_values | unique_pairs
 
 
-def plain_inner_parent_generator(parent, key):
+def inner_parent_generator(parent, key):
     return key if parent == '' else parent + "." + key
+
+
+def stylish_result_wrapper(result, level):
+    return "{\n" + result + '    ' * (level - 1) + "}"

@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 from gendiff.additionals.additional_tools import transforms_option_to_string, \
-    dict_to_complex_value, json_inner_parent_generator, \
-    plain_inner_parent_generator
+    dict_to_complex_value, inner_parent_generator, stylish_result_wrapper
 from gendiff.additionals.checkers import is_deep
 from gendiff.additionals.result_generators import plain_result_generator, \
     stylish_result_generator, json_result_appender
@@ -28,7 +27,7 @@ def stylish(dictionary):
                                                               dict_value,
                                                               'common')
 
-        result = "{\n" + result + '    ' * (level - 1) + "}"
+        result = stylish_result_wrapper(result, level)
         return result
     return inner(dictionary, '')
 
@@ -44,7 +43,7 @@ def added_line_generator(value, function, inner_parent):
 def plain(dictionary):
     def inner(dictionary, result, parent):
         for key in sorted(list(dictionary)):
-            inner_parent = plain_inner_parent_generator(parent, key)
+            inner_parent = inner_parent_generator(parent, key)
             added_line = added_line_generator(dictionary[key], inner,
                                               inner_parent)
             result = result + added_line
@@ -60,7 +59,7 @@ def json_decoder(dictionary):
     def inner(dictionary, result, parent):
         for key in dictionary:
 
-            inner_parent = json_inner_parent_generator(parent, key)
+            inner_parent = inner_parent_generator(parent, key)
 
             if isinstance(dictionary[key], dict):
                 inner(dictionary[key], result, inner_parent)
