@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-from gendiff.additionals.additional_tools import transforms_option_to_string
+from gendiff.additionals.additional_tools import transforms_option_to_string, \
+    dict_to_complex_value, json_inner_parent_generator
 from gendiff.additionals.checkers import is_deep
 from gendiff.additionals.result_generators import plain_result_generator, \
-    stylish_result_generator
+    stylish_result_generator, json_result_appender
 from gendiff.additionals.replacers import str_bool_to_lower
 
 
@@ -59,22 +60,14 @@ def json_decoder(dictionary):
     def inner(dictionary, result, parent):
         for key in dictionary:
 
-            inner_parent = key if parent == '' else parent + "." + key
+            inner_parent = json_inner_parent_generator(parent, key)
 
             if isinstance(dictionary[key], dict):
                 inner(dictionary[key], result, inner_parent)
 
             elif isinstance(dictionary[key], list):
-                pair = list(map(lambda val:
-                                '[complex value]' if isinstance(val, dict)
-                                else val,
-                                dictionary[key]))
-                removed_element, added_element = pair
-
-                if removed_element is None:
-                    result['added'][inner_parent] = added_element
-                else:
-                    result['removed'][str(key)] = removed_element
+                pair = list(map(dict_to_complex_value, dictionary[key]))
+                result = json_result_appender(result, pair, key, inner_parent)
 
         result = str_bool_to_lower(result)
         return result

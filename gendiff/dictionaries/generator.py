@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from gendiff.additionals.additional_tools import common_pairs
+from gendiff.additionals.additional_tools import diff_dict_composer
 from gendiff.additionals.checkers import is_dict_deep
 
 
@@ -18,38 +18,33 @@ def generator_same_keys_diff_values(first_dict, second_dict):
     return result
 
 
-def generator_of_diff_dict_diff_key(first_dict, second_dict):
-    unique_pairs = {}
-    for key in first_dict:
-        if key not in second_dict:
-            unique_pairs[key] = [first_dict[key], None]
-    for key in second_dict:
-        if key not in first_dict:
-            unique_pairs[key] = [None, second_dict[key]]
-    return unique_pairs
+def filler_of_diff_dict_with_common(common_keys, diff_dict,
+                                    first_dict, second_dict):
+    for key in common_keys:
+        pair_values = first_dict[key], second_dict[key]
+
+        if isinstance(first_dict.get(key), dict) \
+                and isinstance(second_dict.get(key), dict):
+            diff_dict[key] = diff_dict_generator(*pair_values)
+        else:
+            if pair_values[0] != pair_values[1]:
+                diff_dict[key] = [*pair_values]
+            else:
+                diff_dict[key] = first_dict[key]
+
+    return diff_dict
 
 
 def diff_dict_generator(first_dict, second_dict):
     def inner(first_dict, second_dict, diff_dict):
 
-        same_keys_and_same_values = common_pairs(first_dict, second_dict)
-        unique_pairs = generator_of_diff_dict_diff_key(first_dict, second_dict)
-        diff_dict = diff_dict | same_keys_and_same_values | unique_pairs
+        diff_dict = diff_dict_composer(first_dict, second_dict, diff_dict)
 
         # for deep dictionaries
         if all((is_dict_deep(first_dict), is_dict_deep(second_dict))):
             common_keys = set(first_dict) & set(second_dict)
-
-            for key in common_keys:
-                pair_values = first_dict[key], second_dict[key]
-                if isinstance(first_dict.get(key), dict) \
-                        and isinstance(second_dict.get(key), dict):
-                    diff_dict[key] = diff_dict_generator(*pair_values)
-                else:
-                    if pair_values[0] != pair_values[1]:
-                        diff_dict[key] = [*pair_values]
-                    else:
-                        diff_dict[key] = first_dict[key]
+            diff_dict = filler_of_diff_dict_with_common(common_keys, diff_dict,
+                                                        first_dict, second_dict)
         else:
             # generating dictionaries with differences
             same_keys_diff_values = generator_same_keys_diff_values(first_dict,

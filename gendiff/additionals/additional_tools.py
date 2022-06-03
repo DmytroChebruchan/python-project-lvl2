@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-# changes boolin type to string with small first letter
 import json
 import yaml
 from gendiff.parcer.parcer import format_parcer
@@ -56,6 +55,7 @@ def transforms_dict_to_value(dictionary, level):
     return result
 
 
+# changes boolin type to string with small first letter
 def transforms_option_to_string(key, level, value, operator='common'):
     operators = {"common": '    ',
                  "0": '  - ',
@@ -74,3 +74,29 @@ def transforms_option_to_string(key, level, value, operator='common'):
     result = '    ' * (level - 1) + operators.get(operator)\
         + str(key) + ": " + str(value) + '\n'
     return result
+
+
+def dict_to_complex_value(value):
+    return '[complex value]' if isinstance(value, dict) else value
+
+
+def json_inner_parent_generator(parent, key):
+    return key if parent == '' else parent + "." + key
+
+
+def generator_of_diff_dict_diff_key(first_dict, second_dict):
+    unique_pairs = {}
+    for key in first_dict:
+        if key not in second_dict:
+            unique_pairs[key] = [first_dict[key], None]
+    for key in second_dict:
+        if key not in first_dict:
+            unique_pairs[key] = [None, second_dict[key]]
+    return unique_pairs
+
+
+def diff_dict_composer(first_dict, second_dict, diff_dict):
+    same_keys_and_same_values = common_pairs(first_dict, second_dict)
+    unique_pairs = generator_of_diff_dict_diff_key(first_dict, second_dict)
+
+    return diff_dict | same_keys_and_same_values | unique_pairs

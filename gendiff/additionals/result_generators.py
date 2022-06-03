@@ -60,3 +60,14 @@ def stylish_result_generator(pair, key, level, result):
                                                       second_element,
                                                       str(1))
     return result
+
+
+def json_result_appender(result, pair, key, inner_parent):
+    removed_element, added_element = pair
+
+    if removed_element is None:
+        result['added'][inner_parent] = added_element
+    else:
+        result['removed'][str(key)] = removed_element
+
+    return result
