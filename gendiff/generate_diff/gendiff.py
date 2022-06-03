@@ -12,7 +12,7 @@ def generate_diff(first_files_address, second_files_address, format='stylish'):
                                                    second_files_address)
 
     result = []
-    diff_dict = diff_dict_generator(first_dict, second_dict)
+    diff_dict = diff_dict_generator([first_dict, second_dict])
 
     decoders = {'stylish': stylish,
                 'plain': plain,

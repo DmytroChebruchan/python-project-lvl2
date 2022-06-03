@@ -1,44 +1,30 @@
 #!/usr/bin/env python3
-from gendiff.additionals.additional_tools import transforms_option_to_string
+from gendiff.additionals.additional_tools import transforms_option_to_string, \
+    dict_to_complex_value, index_of_None_founder
+from gendiff.additionals.replacers import replaces_of_special_values
 
 
 def plain_result_generator(key, list_of_values):
 
     # updating pair by replacing dicts with '[complex value]'
-    pair = list(map(lambda val:
-                    '[complex value]' if isinstance(val, dict) else val,
-                    list_of_values))
+    pair = list(map(dict_to_complex_value, list_of_values))
 
     # updating pair by replacing bool and None elements
-    bool_elements = {'True': 'true',
-                     'False': 'false',
-                     'null': 'null',
-                     'None': 'None',
-                     '[complex value]': '[complex value]',
-                     '0': '0'}
-    pair = list(map(lambda val:
-                    bool_elements.get(str(val))
-                    if str(val) in bool_elements else str("'{}'".format(val)),
-                    pair))
+    pair = list(map(replaces_of_special_values, pair))
 
     # preparations of templates
-    template = '\nProperty \'{}\' was {}'
     added_element = ('added with value: {}').format(pair[1])
     updated_element = ('updated. From {} to {}').format(*pair)
 
     # finding index of None element
-    index = 2
-    for i in [0, 1]:
-        if list_of_values[i] is None:
-            index = i
-            break
+    index = index_of_None_founder(list_of_values)
 
     action_dict = {'1': 'removed',
                    '0': added_element,
                    '2': updated_element}
 
     action = action_dict.get(str(index))
-    result = template.format(key, action)
+    result = '\nProperty \'{}\' was {}'.format(key, action)
 
     return result
 

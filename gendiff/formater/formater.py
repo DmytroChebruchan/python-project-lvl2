@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 from gendiff.additionals.additional_tools import transforms_option_to_string, \
-    dict_to_complex_value, json_inner_parent_generator
+    dict_to_complex_value, json_inner_parent_generator, \
+    plain_inner_parent_generator
 from gendiff.additionals.checkers import is_deep
 from gendiff.additionals.result_generators import plain_result_generator, \
     stylish_result_generator, json_result_appender
@@ -32,22 +33,21 @@ def stylish(dictionary):
     return inner(dictionary, '')
 
 
+def added_line_generator(value, function, inner_parent):
+    if isinstance(value, list):
+        return plain_result_generator(inner_parent, value)
+    if isinstance(value, dict):
+        return function(value, '', inner_parent)
+    return ''
+
+
 def plain(dictionary):
     def inner(dictionary, result, parent):
         for key in sorted(list(dictionary)):
-            if parent == '':
-                inner_parent = key
-            else:
-                inner_parent = parent + "." + key
-
-            added_line = ''
-            if isinstance(dictionary[key], list):
-                added_line = plain_result_generator(inner_parent,
-                                                    dictionary[key])
-            if isinstance(dictionary[key], dict):
-                added_line = inner(dictionary[key], '', inner_parent)
+            inner_parent = plain_inner_parent_generator(parent, key)
+            added_line = added_line_generator(dictionary[key], inner,
+                                              inner_parent)
             result = result + added_line
-
         return result
     return inner(dictionary, '', '')[1::]
 
@@ -65,7 +65,7 @@ def json_decoder(dictionary):
             if isinstance(dictionary[key], dict):
                 inner(dictionary[key], result, inner_parent)
 
-            elif isinstance(dictionary[key], list):
+            if isinstance(dictionary[key], list):
                 pair = list(map(dict_to_complex_value, dictionary[key]))
                 result = json_result_appender(result, pair, key, inner_parent)
 

@@ -18,6 +18,14 @@ def generator_same_keys_diff_values(first_dict, second_dict):
     return result
 
 
+def sub_dict_filler(pair_values, diff_dict, key, value):
+    if pair_values[0] != pair_values[1]:
+        diff_dict[key] = [*pair_values]
+    else:
+        diff_dict[key] = value
+    return diff_dict
+
+
 def filler_of_diff_dict_with_common(common_keys, diff_dict,
                                     first_dict, second_dict):
     for key in common_keys:
@@ -25,17 +33,17 @@ def filler_of_diff_dict_with_common(common_keys, diff_dict,
 
         if isinstance(first_dict.get(key), dict) \
                 and isinstance(second_dict.get(key), dict):
-            diff_dict[key] = diff_dict_generator(*pair_values)
+            diff_dict[key] = diff_dict_generator(pair_values)
         else:
-            if pair_values[0] != pair_values[1]:
-                diff_dict[key] = [*pair_values]
-            else:
-                diff_dict[key] = first_dict[key]
+            diff_dict = sub_dict_filler(pair_values, diff_dict,
+                                        key, first_dict[key])
 
     return diff_dict
 
 
-def diff_dict_generator(first_dict, second_dict):
+def diff_dict_generator(pair):
+    first_dict, second_dict = pair
+
     def inner(first_dict, second_dict, diff_dict):
 
         diff_dict = diff_dict_composer(first_dict, second_dict, diff_dict)

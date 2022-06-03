@@ -76,6 +76,13 @@ def transforms_option_to_string(key, level, value, operator='common'):
     return result
 
 
+def index_of_None_founder(list_of_values):
+    try:
+        return list_of_values.index(None)
+    except ValueError:
+        return 2
+
+
 def dict_to_complex_value(value):
     return '[complex value]' if isinstance(value, dict) else value
 
@@ -86,12 +93,15 @@ def json_inner_parent_generator(parent, key):
 
 def generator_of_diff_dict_diff_key(first_dict, second_dict):
     unique_pairs = {}
-    for key in first_dict:
-        if key not in second_dict:
-            unique_pairs[key] = [first_dict[key], None]
-    for key in second_dict:
-        if key not in first_dict:
-            unique_pairs[key] = [None, second_dict[key]]
+
+    unique_keys = set(first_dict) - set(second_dict)
+    for key in unique_keys:
+        unique_pairs[key] = [first_dict[key], None]
+
+    unique_keys = set(second_dict) - set(first_dict)
+    for key in unique_keys:
+        unique_pairs[key] = [None, second_dict[key]]
+
     return unique_pairs
 
 
@@ -100,3 +110,7 @@ def diff_dict_composer(first_dict, second_dict, diff_dict):
     unique_pairs = generator_of_diff_dict_diff_key(first_dict, second_dict)
 
     return diff_dict | same_keys_and_same_values | unique_pairs
+
+
+def plain_inner_parent_generator(parent, key):
+    return key if parent == '' else parent + "." + key
