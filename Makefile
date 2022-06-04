@@ -19,13 +19,14 @@ install:
 package-install:
 	python3 -m pip install --force-reinstall --user dist/*.whl
 
-lint:
-	@poetry run flake8
 
 update:
 	make build
 	make publish
 	make package-install
+
+lint:
+	@poetry run flake8
 
 push:
 	make lint

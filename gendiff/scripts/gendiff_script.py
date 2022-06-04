@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from gendiff.parcer.parcer import parcer
+from gendiff.cli.cli import parcer
 from gendiff.generate_diff.gendiff import generate_diff
 
 
