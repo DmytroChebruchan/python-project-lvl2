@@ -23,18 +23,22 @@ output is stylish, difference is shown in same format as input files.
     gendiff -h
 ***
 ## Asciinemas of usage
-Difference between 2 simple JSON files returned in 'stylish' format
-    gendiff tests/fixtures/JSON/file1.json tests/fixtures/JSON/file2.json
-[![asciicast](https://asciinema.org/a/499555.svg)](https://asciinema.org/a/499555)
+1. Difference between 2 simple JSON files returned in 'stylish' format
 
-Difference between 2 YML files returned in 'stylish' format
-    gendiff tests/fixtures/YML/file1.yml tests/fixtures/YML/file2.yml
-[![asciicast](https://asciinema.org/a/499635.svg)](https://asciinema.org/a/499635)
+        gendiff tests/fixtures/JSON/file1.json tests/fixtures/JSON/file2.json
+    [![asciicast](https://asciinema.org/a/499555.svg)](https://asciinema.org/a/499555)
 
-Difference between 2 complex JSON files returned in 'stylish' format
-    gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
-[![asciicast](https://asciinema.org/a/499636.svg)](https://asciinema.org/a/499636)
+2. Difference between 2 YML files returned in 'stylish' format
 
-Difference between 2 complex JSON files returned in 'plain' format
-    gendiff --format plain tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
-[![asciicast](https://asciinema.org/a/499637.svg)](https://asciinema.org/a/499637)
+        gendiff tests/fixtures/YML/file1.yml tests/fixtures/YML/file2.yml
+    [![asciicast](https://asciinema.org/a/499635.svg)](https://asciinema.org/a/499635)
+
+1. Difference between 2 complex JSON files returned in 'stylish' format
+
+        gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
+    [![asciicast](https://asciinema.org/a/499636.svg)](https://asciinema.org/a/499636)
+
+4. Difference between 2 complex JSON files returned in 'plain' format
+
+        gendiff --format plain tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
+    [![asciicast](https://asciinema.org/a/499637.svg)](https://asciinema.org/a/499637)
