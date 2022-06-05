@@ -8,9 +8,10 @@ Gendiff is a module for generating defference between 2 JSON or YML files.
 Format is detected automaticaly. There are two options of result output:
 plain and stylish. When output is plain, difference is shown in line, when
 output is stylish, difference is shown in same format as input files.
-
+***
 ## Instruction of installation for users
     pip install https://github.com/user/repo.git@branch
+    gendiff -h
 
 ## Instruction of installation for developers
     git clone https://github.com/DmitriyChebruchan/python-project-lvl2
