@@ -3,23 +3,37 @@
 [![linter_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/linter-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/linter_check.yml)
 [![pytest_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/pytest/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/pytest.yml)
 
-## Instruction for installation
+## Description
+Gendiff is a module for generating defference between 2 JSON or YML files.
+Format is detected automaticaly. There are two options of result output:
+plain and stylish. When output is plain, difference is shown in line, when
+output is stylish, difference is shown in same format as input files.
+
+## Instruction of installation for users
+    pip install https://github.com/user/repo.git@branch
+
+## Instruction of installation for developers
     git clone https://github.com/DmitriyChebruchan/python-project-lvl2
 
     cd python-project-lvl2
 
     make update
+
+    gendiff -h
 ***
 ## Asciinemas of usage
+Difference between 2 simple JSON files returned in 'stylish' format
+    gendiff tests/fixtures/JSON/file1.json tests/fixtures/JSON/file2.json
+[![asciicast](https://asciinema.org/a/499555.svg)](https://asciinema.org/a/499555)
 
-    asciinema gendiff file1.json file2.json
-https://asciinema.org/connect/c04a3227-714d-4fdb-8bc0-4dc4b9a45160
+Difference between 2 YML files returned in 'stylish' format
+    gendiff tests/fixtures/YML/file1.yml tests/fixtures/YML/file2.yml
+[![asciicast](https://asciinema.org/a/499635.svg)](https://asciinema.org/a/499635)
 
-    asciinema gendiff file1.yml file2.yml
-https://asciinema.org/connect/c04a3227-714d-4fdb-8bc0-4dc4b9a45160
+Difference between 2 complex JSON files returned in 'stylish' format
+    gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
+[![asciicast](https://asciinema.org/a/499636.svg)](https://asciinema.org/a/499636)
 
-    asciinema gendiff tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
-https://asciinema.org/connect/4042bde3-b551-4837-8a5a-6d58e51da235
-
-    gendiff --format plain tests/fixtures/JSON/file1_3.json tests/fixtures/JSON/file2_3.json
-https://asciinema.org/connect/4042bde3-b551-4837-8a5a-6d58e51da235
+Difference between 2 complex JSON files returned in 'plain' format
+    gendiff --format plain tests/fixtures/JSON/file1_2.json tests/fixtures/JSON/file2_2.json
+[![asciicast](https://asciinema.org/a/499637.svg)](https://asciinema.org/a/499637)
