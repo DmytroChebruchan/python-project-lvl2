@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from gendiff.additionals.additional_tools import diff_dict_composer
+from gendiff.dictionaries.additional_tools import diff_dict_composer
 from gendiff.additionals.checkers import is_dict_deep
 
 
