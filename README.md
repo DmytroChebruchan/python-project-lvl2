@@ -1,4 +1,3 @@
-[![Actions Status](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/hexlet-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions)
 [![Maintainability](https://api.codeclimate.com/v1/badges/54b91ece1062d51d180e/maintainability)](https://codeclimate.com/github/DmitriyChebruchan/python-project-lvl2/maintainability)
 [![linter_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/linter-check/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/linter_check.yml)
 [![pytest_check](https://github.com/DmitriyChebruchan/python-project-lvl2/workflows/pytest/badge.svg)](https://github.com/DmitriyChebruchan/python-project-lvl2/actions/workflows/pytest.yml)
